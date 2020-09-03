@@ -1,11 +1,22 @@
 from room import Room
 from player import Player
+from item import Item
+from item import Weapon
+from item import Armor
+from item import Potion
 
 # Declare all the rooms
 
+
+items = {
+    'rustysword': Weapon("Sword", "A worn and battle tested sword, seems dull", 100),
+    'shield': Armor("Shield", "A trusty shield", 0.90),
+    'lowpotion': Potion("Low Potion", "It has a translucent glow", 100)
+}
+
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons", [items['rustysword'], items['shield'], items['lowpotion']]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -35,20 +46,53 @@ room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
 
-
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
-player1 = Player("Troy", "outside")
+player1 = Player("Troy", "outside", [], 1000, 25) # name, current_room, satchel, health, base_damage
 # Write a loop that:
 #
 # * Prints the current room name
 # * Prints the current description (the textwrap module might be useful here).
 # * Waits for user input and decides what to do.
 
-def initialize_game(player, map):
+def pickup_item(option, current_room):
+    arr = []
+
+    keys_list = list(items.keys()) 
+    vals_list = list(items.values())
+
+    for j,l in enumerate(vals_list):
+        for i,k in enumerate(room[current_room].itemlist):
+            if(l == room[current_room].itemlist[i]):
+                arr.append(keys_list[j])
+    print(arr)
+
+
+    item_list = arr # ['rustysword', 'shield', 'lowpotion']
+
+
+    item_index = item_list.index(option) # 'rustysword == player option selected
+
+    item_selected = room[current_room].itemlist.pop(item_index) # 'outside' == current_room
+    item_list.pop(item_index)
+    
+
+    print(f"\n{player1.satchel}\n") # []
+
+    player1.satchel.append(item_selected)
+
+    print(f"\n{player1.satchel}\n")
+
+
+
+
+def battle_sequence(theplayer, theenemy):
+    pass
+
+def initialize_game(player, map, itemlist):
     game_over = False
     p = player.name
     cr = player.current_room
@@ -56,10 +100,11 @@ def initialize_game(player, map):
     val_list = list(map.values()) 
 
     print(f"\n Welcome to The Dungeon {p} \n \n")
+    item_list = list(items.keys())
     while(game_over == False):
         print(f"Your location is: {cr} \n")
         print(f'{map[cr].description} \n')
-        option = input("What would you like to do? \n1. Move \n2. Quit \n")
+        option = input("What would you like to do? \n1. Move \n2. Quit \n3. Search\n")
         
         if (option.strip() == "1"):
             direction = input("What direction? [n, w, s, e] or [north, west, south, east]: ")
@@ -87,13 +132,27 @@ def initialize_game(player, map):
                     cr = next_room
                 else:
                     print(f"You can't go in that direction, {map[cr].directions()}")
-        elif(option.strip() == '2' or option.strip() == 'quit'):
+        elif(option.strip() == '2' or option.strip().lower() == 'quit'):
             break
+        elif(option.strip() == '3' or option.strip().lower() == 'search'):
+            
+            print(f"You find: {item_list}")
+            print("You think about what you need to take: \n")
+            for (j, k) in enumerate(item_list):
+                print(f"{j+1}: {k}")
+            selection = input("You choose an item: ")
+            for i, l in enumerate(item_list):
+                if (selection == item_list[i]):
+                    pickup_item(selection, cr)
+                    item_list.pop(i)
+
+            
+            
         else:
             print("\nInvalid option.\n")
 
 
-initialize_game(player1, room)
+initialize_game(player1, room, items)
 
 #
 # If the user enters a cardinal direction, attempt to move to the room there.

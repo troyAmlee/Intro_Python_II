@@ -2,16 +2,18 @@
 # description attributes.
 
 class Room:
-    def __init__(self, name, description):
+    def __init__(self, name, description, itemlist = [], enemylist = []):
         self.name = name.lower()
         self.description = description
+        self.itemlist = itemlist
+        self.enemylist = enemylist
         self.n_to = None
         self.s_to = None
         self.e_to = None
         self.w_to = None
 
     def __str__(self):
-        return f"{self.name}: {self.description} \n "
+        return f"{self.name}: {self.description}"
 
     def directions(self):
         direction = []
