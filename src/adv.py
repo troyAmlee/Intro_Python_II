@@ -54,9 +54,6 @@ def initialize_game(player, map):
     cr = player.current_room
     key_list = list(map.keys()) 
     val_list = list(map.values()) 
-  
-    
-    
 
     print(f"\n Welcome to The Dungeon {p} \n \n")
     while(game_over == False):
