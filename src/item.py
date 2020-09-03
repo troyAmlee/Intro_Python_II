@@ -9,7 +9,8 @@ class Weapon(Item):
     def __init__(self, name, description, damage):
         super().__init__(name, description)
         self.damage = damage # multiplies base damage by a percentage
-
+    def __str__(self):
+        return f"{ self.name }: Damage {self.damage}"
 
 class Armor(Item):
     def __init__(self, name, description, protection):

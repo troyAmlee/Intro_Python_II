@@ -19,6 +19,8 @@ class Player:
         self.satchel.append(item)
     def drop(self, item, room):
         self.satchel.pop()
+    def lookinbag(self):
+        return f"{self.satchel}"
 
 
 class Enemy(Player):

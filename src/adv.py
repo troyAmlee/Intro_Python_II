@@ -9,7 +9,8 @@ from item import Potion
 
 
 items = {
-    'rustysword': Weapon("Sword", "A worn and battle tested sword, seems dull", 100),
+    'rustysword': Weapon("Rusty Sword", "A worn and battle tested sword, seems dull", 100),
+    'silversword': Weapon("Silver Sword", "Made of 75 percent silver and 25 percent titanium alloy, the engraving reads 'Excalibur'", 750),
     'shield': Armor("Shield", "A trusty shield", 0.90),
     'lowpotion': Potion("Low Potion", "It has a translucent glow", 100)
 }
@@ -58,7 +59,35 @@ player1 = Player("Troy", "outside", [], 1000, 25) # name, current_room, satchel,
 # * Prints the current description (the textwrap module might be useful here).
 # * Waits for user input and decides what to do.
 
+def print_inventory():
+    curr_inv = []
+
+    keys_list = list(items.keys()) 
+    vals_list = list(items.values())
+
+    for i,j in enumerate(vals_list):
+        for k in player1.satchel:
+            if (j == k):
+                curr_inv.append(keys_list[i])
+    
+    return curr_inv
+
+def room_items():
+    room_inv = []
+
+    keys_list = list(items.keys()) 
+    vals_list = list(items.values())
+
+    for i,j in enumerate(vals_list):
+        for k in room[player1.current_room].itemlist:
+            if (j == k):
+                room_inv.append(keys_list[i])
+    
+    return room_inv
+
 def pickup_item(option, current_room):
+    
+
     arr = []
 
     keys_list = list(items.keys()) 
@@ -68,7 +97,6 @@ def pickup_item(option, current_room):
         for i,k in enumerate(room[current_room].itemlist):
             if(l == room[current_room].itemlist[i]):
                 arr.append(keys_list[j])
-    print(arr)
 
 
     item_list = arr # ['rustysword', 'shield', 'lowpotion']
@@ -80,11 +108,24 @@ def pickup_item(option, current_room):
     item_list.pop(item_index)
     
 
-    print(f"\n{player1.satchel}\n") # []
-
     player1.satchel.append(item_selected)
 
-    print(f"\n{player1.satchel}\n")
+    print(f"\n You now have {[i.name for i in player1.satchel]}\n")
+
+
+
+def drop_item(option, current_room):
+    inventory = print_inventory()
+
+    # keys_list = list(items.keys()) 
+    # vals_list = list(items.values())
+
+    for i, k in enumerate(inventory):
+        if (option == k):
+            dropped = player1.satchel.pop(inventory.index(k))
+    room[current_room].itemlist.append(dropped)
+
+    print(room[current_room].itemlist)
 
 
 
@@ -104,7 +145,8 @@ def initialize_game(player, map, itemlist):
     while(game_over == False):
         print(f"Your location is: {cr} \n")
         print(f'{map[cr].description} \n')
-        option = input("What would you like to do? \n1. Move \n2. Quit \n3. Search\n")
+        option = input("What would you like to do? \n1. Move \n2. Quit \n3. Search\n4. Drop Item\n5. Inventory\n")
+
         
         if (option.strip() == "1"):
             direction = input("What direction? [n, w, s, e] or [north, west, south, east]: ")
@@ -135,19 +177,33 @@ def initialize_game(player, map, itemlist):
         elif(option.strip() == '2' or option.strip().lower() == 'quit'):
             break
         elif(option.strip() == '3' or option.strip().lower() == 'search'):
-            
-            print(f"You find: {item_list}")
+            il = room_items()
+            print(f"You find: {il}")
             print("You think about what you need to take: \n")
-            for (j, k) in enumerate(item_list):
+            for (j, k) in enumerate(il):
                 print(f"{j+1}: {k}")
             selection = input("You choose an item: ")
-            for i, l in enumerate(item_list):
-                if (selection == item_list[i]):
+            for i, l in enumerate(il):
+                if (selection == il[i]):
                     pickup_item(selection, cr)
-                    item_list.pop(i)
+                    break
+                    # item_list.pop(i)
 
-            
-            
+        elif(option.strip() == '4' or option.strip().lower() == 'dropitem' or option.strip().lower() == 'drop'):
+            inv = print_inventory()
+            print(inv)
+            selection = input("You choose an item: ")
+            if (len(inv) == 0):
+                    print("\n Your inventory is empty. \n")
+            else:
+                for i in inv:
+                    if (selection == i):
+                        drop_item(selection, cr)
+                    elif (selection != i):
+                        print("Invalid selection...")
+        elif(option.strip() == '5' or option.strip().lower() == 'inventory'):
+            print(f"\n Current Inventory:  {print_inventory()} \n")
+
         else:
             print("\nInvalid option.\n")
 
