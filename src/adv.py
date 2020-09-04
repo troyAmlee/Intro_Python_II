@@ -78,8 +78,8 @@ def room_items():
     keys_list = list(items.keys()) 
     vals_list = list(items.values())
 
-    for i,j in enumerate(vals_list):
-        for k in room[player1.current_room].itemlist:
+    for k in room[player1.current_room].itemlist:
+        for i,j in enumerate(vals_list):
             if (j == k):
                 room_inv.append(keys_list[i])
     
@@ -88,18 +88,18 @@ def room_items():
 def pickup_item(option, current_room):
     
 
-    arr = []
+    # arr = []
 
-    keys_list = list(items.keys()) 
-    vals_list = list(items.values())
+    # keys_list = list(items.keys()) 
+    # vals_list = list(items.values())
 
-    for j,l in enumerate(vals_list):
-        for i,k in enumerate(room[current_room].itemlist):
-            if(l == room[current_room].itemlist[i]):
-                arr.append(keys_list[j])
+    # for j,l in enumerate(vals_list):
+    #     for i,k in enumerate(room[current_room].itemlist):
+    #         if(l == room[current_room].itemlist[i]):
+    #             arr.append(keys_list[j])
 
 
-    item_list = arr # ['rustysword', 'shield', 'lowpotion']
+    item_list = room_items() # ['rustysword', 'shield', 'lowpotion']
 
 
     item_index = item_list.index(option) # 'rustysword == player option selected
@@ -199,7 +199,7 @@ def initialize_game(player, map, itemlist):
                 for i in inv:
                     if (selection == i):
                         drop_item(selection, cr)
-                    elif (selection != i):
+                    else:
                         print("Invalid selection...")
         elif(option.strip() == '5' or option.strip().lower() == 'inventory'):
             print(f"\n Current Inventory:  {print_inventory()} \n")
